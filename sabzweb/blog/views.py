@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse, Http404
+from django.shortcuts import get_object_or_404
 from . models import Post
 
 # Create your views here.
@@ -8,19 +9,20 @@ def index(request):
     return HttpResponse("Hello, world. You're at the polls index.")
 
 def posts(request):
-    posts = Post.published.all()
+    post_list = Post.published_posts.all()
     context = {
-        'posts': posts
+        'posts': post_list
     }
-    return render(request, 'posts.html', context)
+    return render(request, 'blog/list.html', context)
 
 def post(request, id):
-    try:
-        post = Post.published.get(id=id)
-    except:
-        raise Http404
+    detail = get_object_or_404(Post, id=id, status= Post.Status.PUBLISHED)
+   # try:
+   #     detail = Post.published_posts.get(id=id)
+   # except:
+   #     raise Http404
 
     context = {
-        'post': post
+        'post': detail
     }
-    return render(request, 'post.html',context)
+    return render(request, 'blog/detail.html',context)
